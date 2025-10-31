@@ -47,22 +47,22 @@ It enables NSG flow logs, diagnostic settings, and traffic analytics so that net
 ## Network Layout
 
 
-                              +--------------------------------------------+
-                              |          secureLabVNet (10.0.0.0/16)       |
-                              |--------------------------------------------|
-                              |                                            |
-                              |  webSubnet (10.0.1.0/24)                   |
-                              |    - Protected by webSubnet-nsg            |
-                              |    - Allows HTTPS (443) from Internet      |
-                              |    - Allows SSH (22) from admin IP         |
-                              |    - Denies all other inbound traffic      |
-                              |                                            |
-                              |  dataSubnet (10.0.2.0/24)                  |
-                              |    - Protected by dataSubnet-nsg           |
-                              |    - Allows SQL (1433) from webSubnet only |
-                              |    - Denies all other inbound traffic      |
-                              |                                            |
-                              +--------------------------------------------+
+    +--------------------------------------------+
+    |          secureLabVNet (10.0.0.0/16)       |
+    |--------------------------------------------|
+    |                                            |
+    |  webSubnet (10.0.1.0/24)                   |
+    |    - Protected by webSubnet-nsg            |
+    |    - Allows HTTPS (443) from Internet      |
+    |    - Allows SSH (22) from admin IP         |
+    |    - Denies all other inbound traffic      |
+    |                                            |
+    |  dataSubnet (10.0.2.0/24)                  |
+    |    - Protected by dataSubnet-nsg           |
+    |    - Allows SQL (1433) from webSubnet only |
+    |    - Denies all other inbound traffic      |
+    |                                            |
+    +--------------------------------------------+
 
 
 
