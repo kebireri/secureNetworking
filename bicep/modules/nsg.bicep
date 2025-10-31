@@ -43,7 +43,7 @@ resource webSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
           protocol: 'Tcp'
           access: 'Allow'
           direction: 'Inbound'
-          sourceAddressPrefix: '' // Allow from your IP or trusted sources <enter your IP here>
+          sourceAddressPrefix: '' // <enter your IP here> Allow from your IP or trusted sources 
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
           destinationPortRange: '22'
