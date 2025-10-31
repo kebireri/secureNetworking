@@ -107,6 +107,7 @@ resource dataSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
 
 
 
+// Updated VNet module to associate NSGs with subnets
 
 
 resource secureLabVnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
