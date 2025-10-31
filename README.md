@@ -64,8 +64,3 @@ It enables NSG flow logs, diagnostic settings, and traffic analytics so that net
     |                                            |
     +--------------------------------------------+
 
-
-
-
-
-# secureNetworking
