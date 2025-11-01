@@ -1,5 +1,9 @@
 param location string = resourceGroup().location
 
+// Retrieve NSG IDs from parameters
+param webNsgId string
+param dataNsgId string
+
 resource secureLabVnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: 'secureLabVnet'
   location: location
@@ -17,7 +21,7 @@ resource secureLabVnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
         properties: {
           addressPrefix: '10.0.1.0/24'
           networkSecurityGroup: {
-            // Updated in manin.bicep
+            id: webNsgId
           }
         }
       }
@@ -26,11 +30,20 @@ resource secureLabVnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
         properties: {
           addressPrefix: '10.0.2.0/24'
           networkSecurityGroup: {
-            // Updated in main.bicep
+            id: dataNsgId
           }
         }
+      }
+
+      // Phase 2: Adding Azure Bastion Subnet
+      {
+        name: 'AzureBastionSubnet'
+        properties: {
+          addressPrefix: '10.0.3.0/26' // Required for Azure Bastion
+      }
       }
     ]
   }
 }
 
+ output vnetName string = secureLabVnet.name // Output the name of the VNet for use in other modules

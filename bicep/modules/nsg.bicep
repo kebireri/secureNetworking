@@ -36,19 +36,24 @@ resource webSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
           destinationPortRange: '80' // Allow HTTP traffic
         }
       }
-      {
-        name: 'allow-SSH'
-        properties: {
-          priority: 300
-          protocol: 'Tcp'
-          access: 'Allow'
-          direction: 'Inbound'
-          sourceAddressPrefix: '' // <enter your IP here> Allow from your IP or trusted sources 
-          sourcePortRange: '*'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '22'
-        }
-      }
+
+      // ===== Deprecated Rule (no longer active) =====
+      // Rule kept for documentation purposes only.
+      // Replaced by Azure Bastion access in Phase 2.
+
+      //{ 
+      //  name: 'allow-SSH-from-MyIP'
+      //  properties: {
+      //    priority: 300
+      //    protocol: 'Tcp'
+      //    access: 'Allow'
+      //    direction: 'Inbound'
+      //    sourceAddressPrefix: '' // <enter your IP here> Allow from your IP or trusted sources 
+      //    sourcePortRange: '*'
+      //    destinationAddressPrefix: '*'
+      //    destinationPortRange: '22'
+      //  }
+      //}
       {
         name: 'Deny-All-Others'
         properties: {
@@ -104,3 +109,7 @@ resource dataSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
     ]
   }
 }
+
+// Outputs to expose NSG IDs for association in the VNet module
+output webNsgId string = webSubnetNsg.id
+output dataNsgId string = dataSubnetNsg.id
