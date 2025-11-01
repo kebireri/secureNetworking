@@ -17,11 +17,11 @@ It deploys a virtual network, two subnets, and network security groups (NSGs) th
   - Allow SQL (1433) traffic only from the web subnet to the data subnet  
   - Deny all other inbound traffic  
 
----
-
 ## Purpose
 The template demonstrates how to express Azure networking concepts declaratively using Bicep.  
 It also serves as the foundation for later phases, where Bastion access, peering, and monitoring will build on this base network.
+
+---
 
 ## Phase 2 (Update):
 
