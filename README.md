@@ -31,62 +31,64 @@ By progressing through the phases, you gain practical experience in building a c
 Creates the base network: one virtual network with two subnets (web and data) and a network security group (NSG) applied to each subnet.  
 The NSGs define which types of traffic are allowed or denied, forming the first layer of network protection.
 
-                        Internet (Public Network)
-                                  │
-                                  │  (direct admin + user access)
-                                  ▼
-   ===============================================================
-   ||            secureLabVNet (10.0.0.0/16)                    ||
-   ||-----------------------------------------------------------||
-   ||                                                           ||
-   ||   +----------------------+      +----------------------+  ||
-   ||   | webSubnet (10.0.1.0) |      | dataSubnet (10.0.2.0)|  ||
-   ||   | 👮 webSubnet-nsg    |       | 👮 dataSubnet-nsg   |  ||
-   ||   | - Allows HTTPS 443   |      | - Allows SQL 1433    |  ||
-   ||   |   from Internet      | ---> |   from webSubnet     |  ||
-   ||   | - Allows SSH 22      |      | - Deny all others    |  ||
-   ||   |   from admin IP      |      |                      |  ||
-   ||   | - Deny all others    |      |                      |  ||
-   ||   +----------------------+      +----------------------+  ||
-   ||                                                           ||
-   ===============================================================
-
-
+---
+             Internet (Public Network)
+                        |
+                        v
+    ______________________________________________________________
+    |              secureLabVNet (10.0.0.0/16)                   |
+    |____________________________________________________________|
+    |                                                            |
+    |  +---------------------+      +-------------------------+  |
+    |  | webSubnet 10.0.1.0  | ---> | dataSubnet 10.0.2.0     |  |
+    |  | webSubnet-nsg       |      | dataSubnet-nsg          |  |
+    |  | - Allow HTTPS 443   |      | - Allow SQL 1433 from   |  |
+    |  |   from Internet     |      |   webSubnet             |  |
+    |  | - Allow SSH 22 from |      | - Deny all others       |  |
+    |  |   admin IP (initial)|      |                         |  |
+    |  | - Deny all others   |      |                         |  |
+    |  +---------------------+      +-------------------------+  |
+    |                                                            |
+    |____________________________________________________________|
+---
 
 - **Phase 2 – Azure Bastion Access**  
 
 Adds Azure Bastion for secure administrative access to virtual machines inside the network without exposing SSH or RDP ports to the internet.
+---
 
-                Internet (Admins only via Azure Portal)
-                                 │
-                                 │
-                      +-------------------------+
-                      |  Azure Bastion Public IP |
-                      +-----------+--------------+
-                                  │
-                                  ▼
-   ===============================================================
-   ||            secureLabVNet (10.0.0.0/16)                    ||
-   ||-----------------------------------------------------------||
-   ||                                                           ||
-   ||   AzureBastionSubnet (10.0.3.0/26)                        ||
-   ||   • Hosts Azure Bastion service                           ||
-   ||   • Origin for admin SSH/RDP traffic (22 / 3389)          ||
-   ||                                                           ||
-   ||          |                               |                ||
-   ||          | Allow 22/3389                 | Allow 22/3389  ||
-   ||          v                               v                ||
-   ||   +----------------------+      +----------------------+  ||
-   ||   | webSubnet (10.0.1.0) |      | dataSubnet (10.0.2.0)|  ||
-   ||   | 👮 webSubnet-nsg      |      | 👮 dataSubnet-nsg  |  ||
-   ||   | - Allows SSH/RDP from|      | - Allows SSH/RDP from|  || 
-   ||   |   Bastion subnet     |      |   Bastion subnet     |  ||
-   ||   | - Allows SQL 1433 →  | ---> | - Allows 1433 from   |  ||
-   ||   |   data subnet        |      |   web subnet         |  ||
-   ||   | - Deny all others    |      | - Deny all others    |  ||
-   ||   +----------------------+      +----------------------+  ||
-   ||                                                           ||
-   ===============================================================
+                 Internet (Admins only via Azure Portal)
+                            │
+                +-------------------------+
+                |  Azure Bastion Public IP |
+                +-----------+--------------+
+                            │
+                            ▼
+    ______________________________________________________________
+    |              secureLabVNet (10.0.0.0/16)                   |
+    |____________________________________________________________|
+    |                                                            |
+    |  AzureBastionSubnet 10.0.3.0/26                            |
+    |  +---------------------------------------------+           |
+    |  | Azure Bastion Host                          |           |
+    |  | - Origin for admin SSH/RDP (22/3389)        |           |
+    |  | - Uses static, Standard public IP           |           |
+    |  +------------------+--------------------------+           |
+    |                     │                                      |
+    |      Allow 22/3389  │                                      |
+    |                     │                                      |
+    |  +---------------------+      +-------------------------+  |
+    |  | webSubnet 10.0.1.0  | -->  | dataSubnet 10.0.2.0     |  |
+    |  | webSubnet-nsg        |     | dataSubnet-nsg          |  |
+    |  | - Allow SQL 1433 →   |     | - Allow 1433 from web   |  |
+    |  |   dataSubnet         |     |   subnet                |  |
+    |  | - Allow SSH/RDP from |     | - Allow SSH/RDP from    |  |
+    |  |   Bastion subnet     |     |   Bastion subnet        |  |
+    |  | - Deny all others    |     | - Deny all others       |  |
+    |  +----------------------+     +-------------------------+  |
+    |                                                            |
+    |____________________________________________________________|
+---
 
 - **Phase 3 – Network Peering**  
 Connects this virtual network to another Azure virtual network using peering.  
