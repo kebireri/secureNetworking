@@ -31,7 +31,6 @@ By progressing through the phases, you gain practical experience in building a c
 Creates the base network: one virtual network with two subnets (web and data) and a network security group (NSG) applied to each subnet.  
 The NSGs define which types of traffic are allowed or denied, forming the first layer of network protection.
 
----
              Internet (Public Network)
                         |
                         v
@@ -55,7 +54,6 @@ The NSGs define which types of traffic are allowed or denied, forming the first 
 - **Phase 2 – Azure Bastion Access**  
 
 Adds Azure Bastion for secure administrative access to virtual machines inside the network without exposing SSH or RDP ports to the internet.
----
 
                  Internet (Admins only via Azure Portal)
                             │
