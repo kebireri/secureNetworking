@@ -53,10 +53,9 @@ The NSGs define which types of traffic are allowed or denied, forming the first 
 ---
 
 - **Phase 2 – Azure Bastion Access**  
-
 Adds Azure Bastion for secure administrative access to virtual machines inside the network without exposing SSH or RDP ports to the internet.
 This phase introduces Azure Bastion to provide secure, browser-based administrative access to virtual machines without exposing SSH or RDP ports to the Internet. It replaces direct public access with a managed, policy-compliant connection through the Bastion host inside the virtual network.
-
+---
                  Internet (Admins only via Azure Portal)
                             │
                 +-------------------------+
