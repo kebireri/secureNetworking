@@ -44,7 +44,7 @@ It enables NSG flow logs, diagnostic settings, and traffic analytics so that net
 
 ---
 
-## Network Layout
+## Network Layout (To be updated)
 
 
     +--------------------------------------------+
@@ -64,8 +64,3 @@ It enables NSG flow logs, diagnostic settings, and traffic analytics so that net
     |                                            |
     +--------------------------------------------+
 
-
-
-
-
-# secureNetworking
