@@ -1,15 +1,24 @@
 @description('Location for all resources')
 param location string = resourceGroup().location
 
+// Admin username and SSH key for VM access
+param adminUsername string
+
+@secure()
+param sshKey string
+
 @description('Existing Hub Virtual Network') // Reference to existing hub vnet
 param hubVnetName string = 'secureLabVnet'
+
+//Subnet id helper variable
+var appsubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', 'spokeVnet', 'Appsubnet') // Spoke VNet App Subnet  
+
 
 
 // Point to existing vnet created in earlier modules (secureLabVnert)
 resource hubVnet 'Microsoft.Network/virtualNetworks@2024-10-01' existing = {
   name: hubVnetName
 }
-
 
 
 // Create Spoke Virtual Network and a Subnet
@@ -66,3 +75,73 @@ resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
     useRemoteGateways: false
   }
 } 
+
+resource appNic 'Microsoft.Network/networkInterfaces@2024-10-01' = {
+  name: 'appNic'
+  location: location
+  tags: {
+    department: 'IT'
+  }
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'appIpConfig'
+        properties: {
+          subnet: {
+            id: appsubnetId
+          }
+          privateIPAllocationMethod: 'Dynamic'
+        }
+      }
+    ]
+  }
+}
+
+// Virtual Machine in the Spoke VNet App Subnet
+resource appVm 'Microsoft.Compute/virtualMachines@2025-04-01' = {
+  name: 'appVm'
+  location: location
+  tags: {
+    department: 'IT'
+  }
+  properties: {
+    hardwareProfile: {
+      vmSize: 'Standard_B1s'
+    }
+    osProfile: {
+      computerName: 'appVm'
+      adminUsername: adminUsername
+      linuxConfiguration: {
+        disablePasswordAuthentication: true
+        ssh: {
+          publicKeys: [
+            {
+              path: '/home/${adminUsername}/.ssh/authorized_keys'
+              keyData: sshKey
+            }
+          ]
+        }
+      }
+    }
+    storageProfile: {
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-focal'
+        sku: '20_04-lts-gen2'
+        version: 'latest'
+      }
+      osDisk: {
+        createOption: 'FromImage'
+      }
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: appNic.id
+        }
+      ]
+    }
+  } 
+}
+              
+
