@@ -1,6 +1,6 @@
 param location string = resourceGroup().location
 
-
+//module imports
 
 // Network Security Groups
 module nsg 'modules/nsg.bicep' = {

@@ -11,7 +11,7 @@ param sshKey string
 param hubVnetName string = 'secureLabVnet'
 
 //Subnet id helper variable
-var appsubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', 'spokeVnet', 'Appsubnet') // Spoke VNet App Subnet  
+var appSubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', 'spokeVnet', 'appSubnet') // Spoke VNet App Subnet  
 
 
 
@@ -88,7 +88,7 @@ resource appNic 'Microsoft.Network/networkInterfaces@2024-10-01' = {
         name: 'appIpConfig'
         properties: {
           subnet: {
-            id: appsubnetId
+            id: appSubnetId
           }
           privateIPAllocationMethod: 'Dynamic'
         }
