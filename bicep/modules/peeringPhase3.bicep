@@ -2,13 +2,15 @@
 param location string = resourceGroup().location
 
 // Admin username and SSH key for VM access
+@secure()
 param adminUsername string
+
+@description('Name of the existing Hub Virtual Network (secureLabVnet)')
+param secureLabVnetName string = 'secureLabVnet'
 
 @secure()
 param sshKey string
 
-@description('Existing Hub Virtual Network') // Reference to existing hub vnet
-param hubVnetName string = 'secureLabVnet'
 
 //Subnet id helper variable
 var appSubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', 'spokeVnet', 'appSubnet') // Spoke VNet App Subnet  
@@ -17,7 +19,7 @@ var appSubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', 'spoke
 
 // Point to existing vnet created in earlier modules (secureLabVnert)
 resource hubVnet 'Microsoft.Network/virtualNetworks@2024-10-01' existing = {
-  name: hubVnetName
+  name: secureLabVnetName
 }
 
 
