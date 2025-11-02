@@ -1,12 +1,12 @@
 @description('Location for all resources')
 param location string = resourceGroup().location
 
+@description('Name of the existing Hub Virtual Network (secureLabVnet)')
+param secureLabVnetName string = 'secureLabVnet'
+
 // Admin username and SSH key for VM access
 @secure()
 param adminUsername string
-
-@description('Name of the existing Hub Virtual Network (secureLabVnet)')
-param secureLabVnetName string = 'secureLabVnet'
 
 @secure()
 param sshKey string
