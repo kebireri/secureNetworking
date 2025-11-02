@@ -90,8 +90,35 @@ This phase introduces Azure Bastion to provide secure, browser-based administrat
 ---
 
 - **Phase 3 – Network Peering**  
-Connects this virtual network to another Azure virtual network using peering.  
-This allows resources in different environments to communicate privately without using public endpoints.
+Establishes secure, private connectivity between the existing Hub virtual network (secureLabVnet) and a new Spoke virtual network (vnet-spoke) using Azure VNet Peering.
+This phase enables internal communication between workloads in both networks over Azure’s private backbone without public endpoints, extending the hub-and-spoke topology for isolated application deployment and centralized management.
+
+---
+                       ┌────────────────────────────┐
+                       │      Internet (Admins)     │
+                       └────────────┬───────────────┘
+                                    │
+                           (Azure Portal Access)
+                                    │
+                        ┌────────────────────────┐
+                        │      Azure Bastion     │
+                        └────────────┬───────────┘
+                                     │
+             HUB VNet – secureLabVnet (10.0.0.0/16)
+        ┌──────────────────────┬──────────────────────┐
+        │  WebSubnet           │  DataSubnet          │
+        │  [ Web VM ]          │                      │
+        └───────────┬──────────┴──────────────────────┘
+                    │
+               (Private Peering)
+                    │
+        ┌───────────▼────────────────────────────────┐
+        │ SPOKE VNet – vnet-spoke (10.1.0.0/16)      │
+        │  AppSubnet (10.1.1.0/24)                   │
+        │  [ App VM – private-only ]                 │
+        └────────────────────────────────────────────┘
+
+---
 
 - **Phase 4 – Network Monitoring**  
 Introduces monitoring and logging.  

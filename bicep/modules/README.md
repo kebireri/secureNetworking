@@ -40,11 +40,7 @@ This phase adds:
 
 All deployments were executed through **modular Bicep templates**, ensuring reusable and well-structured infrastructure as code.  
 
-The resources were automatically **validated against governance policies** from the [Azure Policy as Code project](https://github.com/kebireri/azure-bicep/tree/main/policyAsCode/groupPolicy), ensuring compliance with standards for:
-- Resource tagging  
-- Network configuration  
-- Security enforcement  
-- Naming conventions  
+The resources were automatically **validated against governance policies** from the [Azure Policy as Code project](https://github.com/kebireri/azure-bicep/tree/main/policyAsCode/groupPolicy), ensuring compliance with standards for resource tagging, network configuration, security enforcement, and naming conventions  
 
 ---
 
@@ -59,3 +55,13 @@ Following the introduction of Azure Bastion:
 - The deprecated rule has been **commented out in code** (for documentation) and replaced by a rule that allows management traffic only from the **Bastion subnet**.  
 
 This update improves the network’s security posture by eliminating exposed SSH ports while maintaining documented traceability for historical context.
+
+## Phase 3 (Update):
+
+This phase expands the secure network architecture into a hub and spoke topology by creating a new Spoke VNet (vnet-spoke) and connecting it privately to the existing Hub VNet (secureLabVnet) through Azure VNet Peering.
+
+The spoke network hosts an App VM within a dedicated subnet (AppSubnet), accessible only through internal routes from the hub.
+
+Peering allows seamless, low latency communication between both VNets over Azure’s private backbone without using public IPs or internet routing, while maintaining full isolation and independent control of each network.
+
+This configuration supports centralized management and shared services in the hub, such as Bastion, with application workloads securely deployed in the spoke
