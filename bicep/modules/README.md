@@ -65,3 +65,11 @@ The spoke network hosts an App VM within a dedicated subnet (AppSubnet), accessi
 Peering allows seamless, low latency communication between both VNets over Azure’s private backbone without using public IPs or internet routing, while maintaining full isolation and independent control of each network.
 
 This configuration supports centralized management and shared services in the hub, such as Bastion, with application workloads securely deployed in the spoke
+
+### Phase 4 (Update)
+
+This phase enables observability across the deployed environment. A Log Analytics Workspace was created and connected to the virtual machines through the Azure Monitor Agent (AMA). Diagnostic settings were configured on key resources—VMs, NSGs, Bastion, and Storage—to collect metrics and activity logs in a central workspace.
+
+Using **Azure Bastion**, the virtual machine in the paired (spoke) network was accessed securely through the hub without exposing SSH or RDP ports. This verified that network peering and Bastion connectivity were correctly configured.
+
+Monitoring provides visibility into performance, availability, and security events, allowing proactive detection and response. The environment is now observable, auditable, and aligned with operational best practices.
