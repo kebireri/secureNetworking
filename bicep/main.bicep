@@ -31,3 +31,12 @@ module bastion 'modules/bastion.bicep' = {
   }
 }
 
+// Log Analytics Workspace Module Deployment
+module monitoring 'modules/monitoring.bicep' = {
+  name: 'lawModule'
+  params: {
+    location: location
+    lawName: 'secureLab-law'
+    retentionInDays: 30
+  }
+}

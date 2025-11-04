@@ -4,6 +4,9 @@ param location string = resourceGroup().location
 @description('Name of the existing Hub Virtual Network (secureLabVnet)')
 param secureLabVnetName string = 'secureLabVnet'
 
+// Add NSG to subnet in spoke
+
+
 // Admin username and SSH key for VM access
 @secure()
 param adminUsername string
@@ -12,15 +15,40 @@ param adminUsername string
 param sshKey string
 
 
-//Subnet id helper variable
-var appSubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', 'spokeVnet', 'appSubnet') // Spoke VNet App Subnet  
-
-
 
 // Point to existing vnet created in earlier modules (secureLabVnert)
 resource hubVnet 'Microsoft.Network/virtualNetworks@2024-10-01' existing = {
   name: secureLabVnetName
 }
+
+
+// NSG for Phase 4 implementation (ap subnet and bastion), created after phase 3 implementation
+
+resource appSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
+   name: 'appSubnetNsg'
+   location: location
+   tags: {
+     department: 'IT'
+   }
+   properties: {
+     securityRules: [
+       {
+         name: 'Allow-Bastion-SSH'
+         properties: {
+          priority: 500
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourceAddressPrefix: '10.20.1.0/24'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '22'      //linux ssh
+         }
+       }
+     ]
+   }
+}
+
 
 
 // Create Spoke Virtual Network and a Subnet
@@ -39,9 +67,12 @@ resource spokeVnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
     }
     subnets: [
       {
-        name: 'Appsubnet'
+        name: 'appSubnet'
         properties: {
           addressPrefix: '10.1.1.0/24'
+          networkSecurityGroup: {
+            id: appSubnetNsg.id
+          }
         } // Application subnet
       }
     ]
@@ -90,9 +121,10 @@ resource appNic 'Microsoft.Network/networkInterfaces@2024-10-01' = {
         name: 'appIpConfig'
         properties: {
           subnet: {
-            id: appSubnetId
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', 'spokeVnet', 'appSubnet')
           }
           privateIPAllocationMethod: 'Dynamic'
+          
         }
       }
     ]
@@ -146,4 +178,3 @@ resource appVm 'Microsoft.Compute/virtualMachines@2025-04-01' = {
   } 
 }
               
-

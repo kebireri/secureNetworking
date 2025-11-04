@@ -110,6 +110,34 @@ resource dataSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
   }
 }
 
+// NSG for Phase 4 implementation (ap subnet and bastion), created after phase 3 implementation
+resource appSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
+   name: 'appSubnetNsg'
+   location: location
+   tags: {
+     department: 'IT'
+   }
+   properties: {
+     securityRules: [
+       {
+         name: 'Allow-Bastion-SSH'
+         properties: {
+          priority: 500
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourceAddressPrefix: '10.20.1.0/24'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '22'      //linux ssh
+         }
+       }
+     ]
+   }
+}
+
+
 // Outputs to expose NSG IDs for association in the VNet module
 output webNsgId string = webSubnetNsg.id
 output dataNsgId string = dataSubnetNsg.id
+output appSubnetNsgId string = appSubnetNsg.id
