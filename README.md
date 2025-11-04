@@ -121,7 +121,9 @@ This phase enables internal communication between workloads in both networks ove
 ---
 
 - **Phase 4 – Network Monitoring**  
-Introduces monitoring and logging.  
-It enables NSG flow logs, diagnostic settings, and traffic analytics so that network activity can be observed and reviewed for compliance and performance.
+Implements comprehensive monitoring and logging capabilities, including NSG flow logs, diagnostic settings, and traffic analytics. These features provide deep visibility into network activity, enabling teams to observe, analyze, and audit traffic for both performance and compliance.
+
+     Monitoring delivers operational insight across the environment. It facilitates early detection of performance bottlenecks, accelerates troubleshooting through targeted log queries, and reinforces adherence to governance and security policies. By analyzing usage patterns and identifying anomalies, teams can proactively optimize system performance, control costs, and uphold service reliability.
+
 
 
